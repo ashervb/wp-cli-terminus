@@ -1,15 +1,22 @@
 {
-    "name": "asher/terminus",
-    "description": "",
+    "name": "exitface/wp-cli-terminus",
+    "description": " Add WP CLI commands for working with Pantheon's Terminus",
     "type": "wp-cli-package",
-    "homepage": "https://github.com/asher/terminus",
+    "homepage": "https://github.com/exitface/wp-cli-terminus",
     "license": "MIT",
-    "authors": [],
+    "authors": [
+      {
+        "name": "Asher Van Brunt",
+        "email": "asher@okbreathe.com",
+        "homepage": "https://okbreathe.com"
+      }
+    ],
     "minimum-stability": "dev",
     "autoload": {
         "files": [ "command.php" ]
     },
     "require": {
+        "php": "^5.5 || ^7.0",
         "wp-cli/wp-cli": ">=0.23.0"
     },
     "require-dev": {
