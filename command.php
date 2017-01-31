@@ -15,6 +15,22 @@ function terminus_exec($cmd) {
 /**
  * Overwrites local database with copy from pantheon
  *
+ * ## OPTIONS
+ *
+ * [--site=<site>]
+ * : The name of the site to copy the database from. Required.
+ * [--env=<env>]
+ * : The environment to clone from. Defaults to 'env'
+ * [--url=<url>]
+ * : The url to replace in the database after import. Will be automatically derived from WP settings if omitted
+ * [--no-backup]
+ * : Don't create a new pantheon backup before downloading. Use this if the database hasn't changed
+ * ---
+ *
+ * ## EXAMPLES
+ *
+ *     wp terminus db --site=my-pantheon-site
+ *
  * @when before_wp_load
  */
 function terminus_db_command($args, $opts) {
@@ -67,17 +83,33 @@ function terminus_db_command($args, $opts) {
     WP_CLI::runcommand("search-replace '$env-$site.pantheonsite.io' '$url'");
     $progress->tick();
 
+    $progress->finish();
     WP_CLI::success("Finished overwriting database. (•_•) ( •_•)>⌐■-■ (⌐■_■)");
   } else {
     WP_CLI::error("File $filename does not exist. Exiting");
   }
 
-  $progress->finish();
 };
 WP_CLI::add_command( 'terminus db', 'terminus_db_command' );
 
 /**
- * Overwrites local files with copies from pantheon
+ * Copies files from pantheon
+ *
+ * ## OPTIONS
+ *
+ * [--site=<site>]
+ * : The name of the site to copy the database from. Required.
+ * [--env=<env>]
+ * : The environment to clone from. Defaults to 'env'
+ * [--url=<url>]
+ * : The url to replace in the database after import. Will be automatically derived from WP settings if omitted
+ * [--no-backup]
+ * : Don't create a new pantheon backup before downloading. Use this if the database hasn't changed
+ * ---
+ *
+ * ## EXAMPLES
+ *
+ *     wp terminus files --site=my-pantheon-site
  *
  * @when before_wp_load
  */
@@ -120,6 +152,5 @@ function terminus_files_command($args, $opts) {
     $progress->finish();
     WP_CLI::success("Finished copying files. (•_•) ( •_•)>⌐■-■ (⌐■_■)");
   }
-
 };
 WP_CLI::add_command( 'terminus files', 'terminus_files_command' );
