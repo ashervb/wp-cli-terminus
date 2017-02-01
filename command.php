@@ -37,7 +37,7 @@ function terminus_db_command($args, $opts) {
   $site     = isset($opts['site']) ? $opts['site'] : null;
   $env      = isset($opts['env']) ? $opts['env'] : "dev";
   $backup   = isset($opts['backup']) ? $opts['backup'] : true;
-  $url      = isset($opts['url']) ? $opts['url'] : WP_CLI::runcommand('option get siteurl', array('return' => 'all'))->stdout;
+  $url      = preg_replace("(^https?://)", "", (isset($opts['url']) ? $opts['url'] : WP_CLI::runcommand('option get siteurl', array('return' => 'all'))->stdout));
   $now      = time();
 
   if (!$site) {
