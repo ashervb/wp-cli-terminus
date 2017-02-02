@@ -12,6 +12,11 @@ function terminus_exec($cmd) {
   return array('output' => $output, 'code' => $exit);
 }
 
+function terminus_logged_out() {
+  $ret = terminus_exec("terminus auth:whoami")['output'];
+  return isset($ret[1])&& preg_match("/not logged in/i", $ret[1]) > 0;
+}
+
 /**
  * Overwrites local database with copy from pantheon
  *
@@ -40,6 +45,11 @@ function terminus_db_command($args, $opts) {
   $url      = preg_replace("(^https?://)", "", (isset($opts['url']) ? $opts['url'] : WP_CLI::runcommand('option get siteurl', array('return' => 'all'))->stdout));
   $now      = time();
 
+  if (terminus_logged_out()) {
+    WP_CLI::error("Please log in to pantheon using `terminus auth:login`");
+    return;
+  }
+
   if (!$site) {
     WP_CLI::error("Please supply the site option `--site=NAME`");
     return;
@@ -52,7 +62,7 @@ function terminus_db_command($args, $opts) {
   $progress->tick();
 
   if ($backup) {
-    $ret = terminus_exec("terminus site backups create --site=$site --env=$env --element=db");
+    $ret = terminus_exec("terminus backup:create $site.$env --element=db");
     $progress->tick();
     if ($ret['code'] != 0) {
       WP_CLI::error($ret['output'][0]);
@@ -60,7 +70,7 @@ function terminus_db_command($args, $opts) {
     }
   }
 
-  $ret = terminus_exec("terminus site backups get --site=$site --env=$env --element=database --to=/tmp/$filename --latest");
+  $ret = terminus_exec("terminus backup:get $site.$env --element=database --to=/tmp/$filename");
   $progress->tick();
 
   if ($ret['code'] != 0) {
@@ -119,6 +129,11 @@ function terminus_files_command($args, $opts) {
   $backup   = isset($opts['backup']) ? $opts['backup'] : true;
   $now      = time();
 
+  if (terminus_logged_out()) {
+    WP_CLI::error("Please log in to pantheon using `terminus auth:login`");
+    return;
+  }
+
   if (!$site) {
     WP_CLI::error("Please supply the site option `--site=NAME`");
     return;
@@ -131,11 +146,11 @@ function terminus_files_command($args, $opts) {
   $progress->tick();
 
   if ($backup) {
-    terminus_exec("terminus site backups create --site=$site --env=$env --element=files");
+    terminus_exec("terminus backup:create $site.$env --element=files");
     $progress->tick();
   }
 
-  terminus_exec("terminus site backups get --site=$site --env=$env --element=files --to=/tmp/$filename --latest");
+  terminus_exec("terminus backup:get $site.$env --element=files --to=/tmp/$filename");
   $progress->tick();
 
   if (file_exists("/tmp/$filename")) {
