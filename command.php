@@ -25,7 +25,7 @@ function terminus_logged_out() {
  * [--site=<site>]
  * : The name of the site to copy the database from. Required.
  * [--env=<env>]
- * : The environment to clone from. Defaults to 'env'
+ * : The environment to clone from. Defaults to 'dev'
  * [--url=<url>]
  * : The url to replace in the database after import. Will be automatically derived from WP settings if omitted
  * [--no-backup]
@@ -110,7 +110,7 @@ WP_CLI::add_command( 'terminus db', 'terminus_db_command' );
  * [--site=<site>]
  * : The name of the site to copy the database from. Required.
  * [--env=<env>]
- * : The environment to clone from. Defaults to 'env'
+ * : The environment to clone from. Defaults to 'dev'
  * [--url=<url>]
  * : The url to replace in the database after import. Will be automatically derived from WP settings if omitted
  * [--no-backup]
